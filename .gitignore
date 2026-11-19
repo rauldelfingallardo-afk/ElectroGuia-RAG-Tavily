@@ -221,3 +221,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Custom ElectroGuia-RAG-Tavily Exclusions
+.env
+data/
+*.pdf
