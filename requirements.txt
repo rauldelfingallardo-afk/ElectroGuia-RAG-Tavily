@@ -1,0 +1,28 @@
+# ==============================================================================
+# DEPENDENCIAS - ELECTROGUIA-RAG-TAVILY
+# ==============================================================================
+
+# --- OCI & Variables de Entorno ---
+oci>=2.130.0
+python-dotenv>=1.0.1
+
+# --- Ecosistema LangChain (Paquetes actualizados con guion medio) ---
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-community>=0.3.0
+langchain-text-splitters>=0.3.0
+langchain-classic
+
+# --- Oracle OCI Generative AI (Cohere Command y Embeddings) ---
+langchain-oci>=0.1.0
+
+# --- Búsqueda Web en Tiempo Real (Tavily) ---
+tavily-python>=0.5.0
+langchain-tavily>=0.1.0
+
+# --- Procesamiento de PDFs y Base Vectorial Local ---
+pymupdf>=1.24.0
+faiss-cpu>=1.8.0
+
+# --- Interfaz de Usuario (UI) ---
+streamlit>=1.40.0
