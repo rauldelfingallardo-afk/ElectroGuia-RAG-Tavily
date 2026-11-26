@@ -1,5 +1,5 @@
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv # type: ignore
 
 # Cargar variables desde el archivo .env
 load_dotenv()

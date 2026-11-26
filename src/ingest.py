@@ -7,10 +7,10 @@ from pathlib import Path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from config import settings
-from langchain_community.document_loaders import PyMuPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_oci import OCIGenAIEmbeddings
-from langchain_community.vectorstores import FAISS
+from langchain_community.document_loaders.pdf import PyMuPDFLoader # type: ignore
+from langchain_text_splitters import RecursiveCharacterTextSplitter # type: ignore
+from langchain_oci import OCIGenAIEmbeddings # type: ignore
+from langchain_community.vectorstores import FAISS # type: ignore
 
 def cargar_documentos_pdf(data_dir: str):
     """Recorre la carpeta data/ y extrae el texto de todos los archivos PDF."""
