@@ -1,0 +1,33 @@
+===========================================================================
+🧪 REPORTE DE EVIDENCIA - ELECTROGUÍA RAG + TAVILY
+📅 Fecha y hora de ejecución: 2026-11-25 21:43:14
+===========================================================================
+
+[TEST 1] Verificando variables de entorno (.env)...
+✅ PASS: Variables críticas de OCI y Tavily configuradas correctamente.
+
+[TEST 2] Verificando existencia de índice vectorial FAISS...
+✅ PASS: Índice FAISS encontrado (7404.04 KB) en 'C:\Users\Raul y Thiago\Proy-Electicidad-Github\ElectroGuia-RAG-Tavily\faiss_index/'.
+
+[TEST 3] Verificando catálogo de Preguntas Frecuentes (src/faqs.py)...
+✅ PASS: Catálogo cargado con 4 categorías y 16 preguntas.
+
+[TEST 4] Inicializando ElectroGuiaEngine...
+✅ PASS: Motor ElectroGuiaEngine inicializado sin errores.
+
+[TEST 5] Ejecutando consulta de normativa local (RAG FAISS)...
+   ❓ Pregunta: ¿Qué colores de cables exige la reglamentación argentina para Fase, Neutro y Tierra?
+   🌐 ¿Usó búsqueda web?: NO (100% PDF local)
+   📚 Fuentes PDF recuperadas: Reglamento aea 90364 parte 7_771.pdf (Pág. 95), Reglamento aea 90364 parte 7_771.pdf (Pág. 77), Reglamento aea 90364 parte 7_771.pdf (Pág. 24), Reglamento aea 90364 parte 7_771.pdf (Pág. 83)
+   📝 Extracto de respuesta: ¡Excelente pregunta! La identificación correcta de los colores de los cables es fundamental para la seguridad y el correcto funcionamiento de las instalaciones eléctricas. Vamos a responderla paso a paso, basándonos en l...
+✅ PASS: Consulta RAG local validada correctamente.
+
+[TEST 6] Ejecutando consulta híbrida con búsqueda web (Tavily)...
+   ❓ Pregunta: ¿Qué marcas de interruptores diferenciales homologados IRAM se consiguen hoy en Argentina?
+   🌐 Fuentes Web (Tavily): ['⚡ Protección diferencial Clase A vs. AC: diferencias y normativa en Argentina - ELECTRO ARGENTINA | Guía Online de Casas de Electricidad', 'Mejores Marcas de Interruptores Diferenciales (Guía 2026)', 'Herramientas imprescindibles para el electricista: marcas que no fallan - ELECTRO ARGENTINA | Guía Online de Casas de Electricidad']
+   📝 Extracto de respuesta: ¡Excelente pregunta! Al elegir interruptores diferenciales, es crucial seleccionar marcas homologadas por IRAM para garantizar la seguridad y el cumplimiento de las normas argentinas. Según la información actualizada, es...
+✅ PASS: Integración con Tavily Search validada correctamente.
+
+===========================================================================
+🎉 RESULTADO FINAL: 6/6 PRUEBAS SUPERADAS CON ÉXITO
+===========================================================================
