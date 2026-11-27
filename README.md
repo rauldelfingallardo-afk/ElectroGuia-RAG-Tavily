@@ -1,6 +1,18 @@
 # ⚡ ElectroGuía AI — Asistente Técnico Eléctrico (RAG + Tavily)
 
+[![Live Demo](https://shields.io🌐_Demo_en_Vivo-Probar_Aplicación-2ea44f?style=for-the-badge)](https://electroguia.<TU-IP-PUBLICA>.nip.io)
+[![OCI GenAI](https://shields.ioOracle_Cloud-Generative_AI-F80000?style=for-the-badge&logo=oracle)](https://oracle.com)
+[![Python](https://shields.ioPython-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+
 **ElectroGuía AI** es un asistente inteligente de consulta técnica diseñado para electricistas principiantes, técnicos e instaladores en Argentina. Combina **Generación Aumentada por Recuperación (RAG)** sobre normativa oficial (**AEA 90364**, normas **IRAM**, **Ley de Ohm**, seguridad eléctrica y canalizaciones) con **búsqueda web en tiempo real (Tavily Search)**, desplegado 24/7 en **Oracle Cloud Infrastructure (OCI)**.
+
+---
+
+## 🌐 Prueba la Aplicación en Vivo (Live Demo)
+
+👉 **Accede directamente desde tu navegador:** **[https://electroguia.<TU-IP-PUBLICA>.nip.io](https://electroguia.<TU-IP-PUBLICA>.nip.io)**
+
+> *Desplegada 24/7 en una instancia Ubuntu de Oracle Cloud Infrastructure (OCI Compute) detrás de Nginx Reverse Proxy con certificado SSL/TLS (HTTPS).*
 
 ---
 
