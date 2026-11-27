@@ -1,97 +1,131 @@
-# ⚡ ElectroGuia-RAG-Tavily
+# ⚡ ElectroGuía AI — Asistente Técnico Eléctrico (RAG + Tavily)
 
-Asistente técnico inteligente basado en Inteligencia Artificial, diseñado para **electricistas principiantes y estudiantes en Argentina**. 
-
-> **⚠️ Nota Normativa Importante:** Si bien la electricidad es un fenómeno físico universal, las instalaciones y criterios de seguridad se rigen por las normativas vigentes de cada país. Este proyecto está adaptado específicamente al marco regulatorio y técnico de la **República Argentina** (Reglamentación AEA 90364).
+**ElectroGuía AI** es un asistente inteligente de consulta técnica diseñado para electricistas principiantes, técnicos e instaladores en Argentina. Combina **Generación Aumentada por Recuperación (RAG)** sobre normativa oficial (**AEA 90364**, normas **IRAM**, **Ley de Ohm**, seguridad eléctrica y canalizaciones) con **búsqueda web en tiempo real (Tavily Search)**, desplegado 24/7 en **Oracle Cloud Infrastructure (OCI)**.
 
 ---
 
-## 🎯 Objetivo del Proyecto
+## 🏗️ Arquitectura del Sistema
 
-Construir un pipeline en Python que combine **RAG (Retrieval-Augmented Generation)** utilizando **LangChain** junto con búsqueda web en tiempo real mediante **Tavily**. 
+El sistema implementa un flujo híbrido con evaluación automática de relevancia (*Self-Corrective / Adaptive RAG*):
 
-El sistema responderá consultas técnicas basándose prioritariamente en documentación oficial local (archivos `.pdf`) y complementará las respuestas con sugerencias, normativas complementarias o precios/materiales actualizados desde la web en español latinoamericano.
+```text
+                       ┌───────────────────────────────────┐
+                       │   OCI Object Storage (Bucket)     │
+                       │  Manuales PDF (AEA 90364 / IRAM)  │
+                       └─────────────────┬─────────────────┘
+                                         │ (Ingesta inicial: ingest.py)
+                                         ▼
+┌──────────────┐       ┌───────────────────────────────────┐
+│   Usuario    │──────▶│      Interfaz Web (Streamlit)     │
+│ (Navegador)  │◀──────│   Chat + Catálogo FAQ por temas   │
+└──────┬───────┘       └─────────────────┬─────────────────┘
+       │ HTTPS (Certbot)                 │
+       ▼                                 ▼
+┌──────────────┐       ┌───────────────────────────────────┐
+│ Nginx Proxy  │──────▶│   Motor RAG (ElectroGuiaEngine)   │
+│  (*.nip.io)  │       │     OCI Generative AI (Cohere)    │
+└──────────────┘       └─────────┬───────────────┬─────────┘
+                                 │               │
+                 1. Búsqueda     │               │ 2. Fallback / Actualidad
+                    Semántica    ▼               ▼    (Si falta info local)
+                       ┌─────────────────┐ ┌───────────────┐
+                       │ Base Vectorial  │ │ Tavily Search │
+                       │  FAISS (Local)  │ │   (API Web)   │
+                       └─────────────────┘ └───────────────┘
+```
 
----
-
-## 📚 Base de Conocimientos (Documentos `.pdf`)
-
-El sistema se alimentará inicialmente de una carpeta local (`/data` o `/docs`) con bibliografía técnica en formato PDF enfocada en el aprendizaje en Argentina:
-* **Reglamentación AEA 90364** (Asociación Electrotécnica Argentina).
-* **Fundamentos teóricos:** Ley de Ohm, potencia eléctrica, circuitos serie y paralelo.
-* **Seguridad eléctrica:** Protecciones (interruptores termomagnéticos, diferenciales/disyuntores), puesta a tierra (PAT) y elementos de protección personal (EPP).
-* **Canalizaciones y cableado:** Cálculo de secciones de conductores, caños, bandejas y tableros eléctricos.
+### ✨ Características Principales
+* **Ingesta Automatizada desde la Nube:** Descarga los manuales técnicos directamente desde **OCI Object Storage**, los fragmenta respetando contexto normativo y genera embeddings vectoriales con **OCI Cohere** almacenados localmente en **FAISS**.
+* **Motor Híbrido Inteligente (`rag_engine.py`):** Evalúa automáticamente si los fragmentos recuperados de los PDFs locales son suficientes para responder la consulta. Si la pregunta requiere precios de mercado, disponibilidad de materiales en Argentina o información externa, activa **Tavily Search** de forma autónoma.
+* **Trazabilidad Transparente:** Cada respuesta cita explícitamente el documento PDF y número de página consultado o los enlaces web verificados.
+* **Catálogo Interactivo de Preguntas Frecuentes (`faqs.py`):** 16 preguntas fundamentales organizadas en 4 módulos pedagógicos (*Fundamentos*, *Instalaciones Domiciliarias*, *Seguridad Eléctrica* y *Tableros y Protecciones*).
+* **Despliegue Multi-Proyecto 24/7:** Configurado como servicio `systemd` en Ubuntu (OCI Compute) detrás de **Nginx Reverse Proxy** con subdominios dinámicos (`nip.io`) y cifrado **SSL/TLS (Let's Encrypt)**.
 
 ---
 
 ## 🛠️ Stack Tecnológico
 
-* **Lenguaje:** Python 3.10+
-* **Orquestación LLM / RAG:** LangChain
-* **Búsqueda Web (Agente/Herramienta):** Tavily Search API
-* **Procesamiento de PDFs y Embeddings:** PyPDF / ChromaDB o FAISS *(a definir en el desarrollo)*
-* **Entorno de Desarrollo:** Visual Studio Code (VS Code) + Git / GitHub
+* **Lenguaje:** Python 3.11+
+* **Orquestación LLM & RAG:** LangChain (`langchain-oci`, `langchain-community`, `langchain-tavily`)
+* **Modelos de IA:** Oracle Cloud Infrastructure (OCI) Generative AI (`cohere.command-r-plus` / `cohere.embed-multilingual-v3.0`)
+* **Base Vectorial:** FAISS (Facebook AI Similarity Search)
+* **Búsqueda Web en Tiempo Real:** Tavily Search API
+* **Almacenamiento Cloud:** OCI Object Storage
+* **Frontend:** Streamlit
+* **Infraestructura & Seguridad:** OCI Compute (Ubuntu), `systemd`, Nginx Reverse Proxy, `nip.io`, Certbot (HTTPS)
 
 ---
 
-## 📁 Estructura Inicial del Proyecto
+## 📂 Estructura del Proyecto
 
 ```text
 ElectroGuia-RAG-Tavily/
-├── data/                   # Archivos .pdf técnicos (AEA 90364, Ley de Ohm, etc.)
-├── src/                    # Código fuente del pipeline en Python
-├── .env                    # Variables de entorno (API Keys - NO subir a GitHub)
-├── .gitignore              # Archivos y carpetas ignorados por Git
+├── data/                   # Directorio local para manuales PDF (ignorado en Git)
+├── faiss_index/            # Base de datos vectorial generada (ignorado en Git)
+├── src/
+│   ├── config.py           # Gestión y validación de variables de entorno
+│   ├── ingest.py           # Descarga desde OCI Bucket, chunking e indexación FAISS
+│   ├── rag_engine.py       # Motor híbrido RAG + Juez de relevancia + Tavily
+│   ├── faqs.py             # Catálogo de preguntas frecuentes por categoría
+│   ├── app.py              # Aplicación web interactiva en Streamlit
+│   ├── test_connections.py # Validación de conectividad con OCI y Tavily
+│   └── test_pipeline.py    # Suite de pruebas integradas de extremo a extremo
+├── evidencia_tests.txt     # Reporte automático de ejecución de pruebas
+├── .env.example            # Plantilla de variables de entorno requeridas
+├── .gitignore              # Exclusión de credenciales, entornos y binarios pesados
 ├── requirements.txt        # Dependencias del proyecto
-└── README.md               # Documentación principal del proyecto
+└── README.md               # Documentación técnica
 ```
 
 ---
 
-## 🚀 Cómo empezar (Paso a Paso Local)
+## 🚀 Instalación y Uso Local
 
-1. **Clonar este repositorio en tu PC:**
-   ```bash
-   git clone https://github.com
-   cd ElectroGuia-RAG-Tavily
-   ```
+### 1. Clonar el repositorio y crear entorno virtual
+```bash
+git clone https://github.com
+cd ElectroGuia-RAG-Tavily
+python -m venv venv
 
-2. **Crear y activar un entorno virtual:**
-   * En Windows:
-     ```bash
-     python -m venv venv
-     venv\Scripts\activate
-     ```
-   * En Linux/Mac:
-     ```bash
-     python3 -m venv venv
-     source venv/bin/activate
-     ```
+# En Windows:
+.\venv\Scripts\activate
+# En Linux/Mac:
+source venv/bin/activate
 
-3. **Instalar las dependencias:** *(una vez creado el archivo `requirements.txt`)*
-   ```bash
-   pip install -r requirements.txt
-   ```
+pip install -r requirements.txt
+```
 
-4. **Configurar las variables de entorno:**
-   Crear un archivo `.env` en la raíz del proyecto con tus claves:
-   ```env
-   OPENAI_API_KEY=tu_clave_aqui
-   TAVILY_API_KEY=tu_clave_aqui
-   ```
+### 2. Configurar variables de entorno
+Copia `.env.example` a `.env` y completa tus credenciales de **OCI** y **Tavily**:
+```bash
+cp .env.example .env
+```
 
----
+### 3. Validar conexiones e indexar documentos
+```bash
+# Verificar acceso a OCI LLM, OCI Embeddings y Tavily
+python src/test_connections.py
 
-## 📌 Estado del Proyecto
+# Descargar PDFs desde OCI Object Storage (o leer data/) y crear índice FAISS
+python src/ingest.py
+```
 
-- [x] Creación del repositorio y documentación inicial (`README.md`).
-- [ ] Configuración del entorno local en VS Code, `.gitignore` y `requirements.txt`.
-- [ ] Carga y procesamiento (chunking + embeddings) de los archivos PDF técnicos.
-- [ ] Integración de LangChain + Tavily para respuestas híbridas (PDFs + Web).
-- [ ] Pruebas con casos prácticos de instalaciones eléctricas domiciliarias en Argentina.
+### 4. Ejecutar pruebas integradas y lanzar la aplicación
+```bash
+# Ejecutar suite de validación (genera evidencia_tests.txt)
+python src/test_pipeline.py
+
+# Iniciar interfaz web en Streamlit
+streamlit run src/app.py
+```
 
 ---
 
-## ⚠️ Descargo de Responsabilidad (Disclaimer)
+## 🧪 Evidencia de Pruebas
 
-Este software es una herramienta educativa y de consulta rápida. **No reemplaza el criterio profesional** ni la firma de un electricista matriculado habilitado por los entes reguladores correspondientes en Argentina. Siempre respete las normas de seguridad vigentes antes de intervenir una instalación eléctrica.
+El proyecto incluye una suite de pruebas automatizadas (`src/test_pipeline.py`) que valida la configuración, el índice vectorial FAISS, el catálogo de FAQs, las consultas normativas sobre PDFs locales y el enrutamiento hacia Tavily Search. Los resultados de la última ejecución se encuentran documentados en [`evidencia_tests.txt`](./evidencia_tests.txt).
+
+---
+
+## ⚠️ Aviso Técnico y de Seguridad
+Este asistente tiene fines educativos y de apoyo técnico. Toda intervención en instalaciones eléctricas reales debe ser ejecutada o supervisada por un **electricista matriculado**, respetando estrictamente las **5 Reglas de Oro de Seguridad Eléctrica** y la **Reglamentación AEA 90364** vigente en la República Argentina.
