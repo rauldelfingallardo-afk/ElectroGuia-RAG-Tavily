@@ -10,7 +10,7 @@
 
 ## 🌐 Prueba la Aplicación en Vivo (Live Demo)
 
-👉 **Accede directamente desde tu navegador:** **[https://electroguia.<TU-IP-PUBLICA>.nip.io](https://electroguia.<TU-IP-PUBLICA>.nip.io)**
+👉 **Accede directamente desde tu navegador:** **[https://electroguia.144.22.231.88.nip.io](https://electroguia.144.22.231.88.nip.io)**
 
 > *Desplegada 24/7 en una instancia Ubuntu de Oracle Cloud Infrastructure (OCI Compute) detrás de Nginx Reverse Proxy con certificado SSL/TLS (HTTPS).*
 
