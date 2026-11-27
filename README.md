@@ -1,6 +1,6 @@
 # ⚡ ElectroGuía AI — Asistente Técnico Eléctrico (RAG + Tavily)
 
-[![Live Demo](https://shields.io🌐_Demo_en_Vivo-Probar_Aplicación-2ea44f?style=for-the-badge)](https://electroguia.<TU-IP-PUBLICA>.nip.io)
+[![Live Demo](https://shields.io🌐_Demo_en_Vivo-Probar_Aplicación-2ea44f?style=for-the-badge)](https://electroguia.144.22.231.88.nip.io)
 [![OCI GenAI](https://shields.ioOracle_Cloud-Generative_AI-F80000?style=for-the-badge&logo=oracle)](https://oracle.com)
 [![Python](https://shields.ioPython-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 
